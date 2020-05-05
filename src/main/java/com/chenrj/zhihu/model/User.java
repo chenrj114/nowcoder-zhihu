@@ -1,9 +1,5 @@
 package com.chenrj.zhihu.model;
 
-import org.springframework.stereotype.Controller;
-
-import java.io.Serializable;
-
 public class User{
     private Integer id;
 

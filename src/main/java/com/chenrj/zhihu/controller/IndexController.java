@@ -1,8 +1,12 @@
 package com.chenrj.zhihu.controller;
 
+import com.chenrj.zhihu.model.HostHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -16,8 +20,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class IndexController {
 
+    @Resource
+    HostHolder currnetUser;
+
     @RequestMapping(path = {"/", "/index"}, method = RequestMethod.GET)
-    public String index() {
-        return "index";
+    public ModelAndView index(ModelAndView modelAndView) {
+        modelAndView.setViewName("index");
+        return modelAndView;
     }
 }
