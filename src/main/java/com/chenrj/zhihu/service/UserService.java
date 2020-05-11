@@ -104,6 +104,10 @@ public class UserService {
         return userDao.selectUserByName(name);
     }
 
+    public User getUser(int userId) {
+        return userDao.selectUserById(userId);
+    }
+
     public String getCookie(String name) {
         User user = userDao.selectUserByName(name);
         return ticketDao.selectLoginTicketByUserId(user.getId()).getTicket();
