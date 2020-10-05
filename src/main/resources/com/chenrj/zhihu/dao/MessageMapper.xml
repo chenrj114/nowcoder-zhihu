@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chenrj.zhihu.dao.MessageMapper">
+    <resultMap id="BaseResultMap" type="com.chenrj.zhihu.model.Message">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="from_id" jdbcType="INTEGER" property="fromId" />
+        <result column="to_id" jdbcType="INTEGER" property="toId" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="createDate" jdbcType="TIMESTAMP" property="createdate" />
+        <result column="has_read" jdbcType="BIT" property="hasRead" />
+        <result column="conversationId" jdbcType="VARCHAR" property="conversationId" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, from_id, to_id, content, createDate, has_read, conversationId
+    </sql>
+    <sql id="Column_List_No_Id">
+        from_id, to_id, content, createDate, has_read, conversationId
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from message
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from message
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.chenrj.zhihu.model.Message">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into message (from_id, to_id, content,
+            createDate, has_read, conversationId
+            )
+        values (#{fromId,jdbcType=INTEGER}, #{toId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR},
+            #{createdate,jdbcType=TIMESTAMP}, #{hasRead,jdbcType=BIT}, #{conversationId,jdbcType=VARCHAR}
+            )
+    </insert>
+    <insert id="insertSelective" parameterType="com.chenrj.zhihu.model.Message">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fromId != null">
+                from_id,
+            </if>
+            <if test="toId != null">
+                to_id,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="createdate != null">
+                createDate,
+            </if>
+            <if test="hasRead != null">
+                has_read,
+            </if>
+            <if test="conversationId != null">
+                conversationId,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fromId != null">
+                #{fromId,jdbcType=INTEGER},
+            </if>
+            <if test="toId != null">
+                #{toId,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="createdate != null">
+                #{createdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="hasRead != null">
+                #{hasRead,jdbcType=BIT},
+            </if>
+            <if test="conversationId != null">
+                #{conversationId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.chenrj.zhihu.model.Message">
+        update message
+        <set>
+            <if test="fromId != null">
+                from_id = #{fromId,jdbcType=INTEGER},
+            </if>
+            <if test="toId != null">
+                to_id = #{toId,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="createdate != null">
+                createDate = #{createdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="hasRead != null">
+                has_read = #{hasRead,jdbcType=BIT},
+            </if>
+            <if test="conversationId != null">
+                conversationId = #{conversationId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.chenrj.zhihu.model.Message">
+        update message
+        set from_id = #{fromId,jdbcType=INTEGER},
+            to_id = #{toId,jdbcType=INTEGER},
+            content = #{content,jdbcType=VARCHAR},
+            createDate = #{createdate,jdbcType=TIMESTAMP},
+            has_read = #{hasRead,jdbcType=BIT},
+            conversationId = #{conversationId,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="queryConversationByUserId" parameterType="java.lang.Integer" resultType="com.chenrj.zhihu.model.Message">
+        select
+        <include refid="Column_List_No_Id"/> from (
+            (select
+            <include refid="Column_List_No_Id" />
+            from message
+            where from_id = #{userId,jdbcType=INTEGER})
+            union all
+            (select
+            <include refid="Column_List_No_Id" />
+            from message
+            where to_id = #{userId,jdbcType=INTEGER}) ) t
+        <!--select
+        <include refid="Column_List_No_Id" />
+        from message
+        where from_id = #{userId,jdbcType=INTEGER}-->
+    </select>
+</mapper>
