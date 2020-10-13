@@ -1,5 +1,8 @@
 package com.chenrj.zhihu.controller;
 
+import com.chenrj.zhihu.async.EventModel;
+import com.chenrj.zhihu.async.EventProducer;
+import com.chenrj.zhihu.async.EventType;
 import com.chenrj.zhihu.model.HostHolder;
 import com.chenrj.zhihu.result.ResultStatus;
 import com.chenrj.zhihu.service.UserService;
@@ -33,6 +36,9 @@ public class LoginController {
 
     @Resource
     HostHolder currentUser;
+
+    @Autowired
+    EventProducer eventProducer;
 
     @RequestMapping(path = "/signin", method = RequestMethod.GET)
     public String registerAndLogin() {
@@ -80,6 +86,11 @@ public class LoginController {
                 response.addCookie(cookie);
                 modelAndView.addObject("currentUser", currentUser.getUser());
                 modelAndView.setViewName("redirect:/index");
+
+                EventModel eventModel = new EventModel();
+                eventModel.setActionId(currentUser.getUser().getId());
+                eventModel.setEventType(EventType.LOGIN);
+                eventProducer.fireEvent(eventModel);
                 return modelAndView;
             case LOGIN_FAIL:
                 modelAndView.addObject("msg", status.getMessage());
