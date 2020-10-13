@@ -1,8 +1,6 @@
 package com.chenrj.zhihu.controller;
 
-import com.chenrj.zhihu.async.EventModel;
 import com.chenrj.zhihu.async.EventProducer;
-import com.chenrj.zhihu.async.EventType;
 import com.chenrj.zhihu.model.HostHolder;
 import com.chenrj.zhihu.result.ResultStatus;
 import com.chenrj.zhihu.service.UserService;
@@ -87,10 +85,11 @@ public class LoginController {
                 modelAndView.addObject("currentUser", currentUser.getUser());
                 modelAndView.setViewName("redirect:/index");
 
-                EventModel eventModel = new EventModel();
+                // 取消登录邮件发送
+                /*EventModel eventModel = new EventModel();
                 eventModel.setActionId(currentUser.getUser().getId());
                 eventModel.setEventType(EventType.LOGIN);
-                eventProducer.fireEvent(eventModel);
+                eventProducer.fireEvent(eventModel);*/
                 return modelAndView;
             case LOGIN_FAIL:
                 modelAndView.addObject("msg", status.getMessage());
