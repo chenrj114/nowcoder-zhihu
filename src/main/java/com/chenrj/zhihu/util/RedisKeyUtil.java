@@ -27,11 +27,11 @@ public class RedisKeyUtil {
 
     /**
      * 获取某个用户 所有的粉丝 的业务Key
-     * @param userId 某个用户的ID （别人关注了他）
+     * @param entityId 某个实体的ID （别人关注了他）
      * @return key
      */
-    public static String getFollowerKey(int userId) {
-        return BIZ_FOLLOWER + SPLIT + userId;
+    public static String getFollowerKey(int entityType, int entityId) {
+        return BIZ_FOLLOWER + SPLIT + entityType + SPLIT + entityId;
     }
 
     /**
@@ -39,8 +39,8 @@ public class RedisKeyUtil {
      * @param userId 某个用户的ID （他去关注别人）
      * @return key
      */
-    public static String getFolloweeKey(int userId) {
-        return BIZ_FOLLOWEE + SPLIT + userId;
+    public static String getFolloweeKey(int userId, int entityType) {
+        return BIZ_FOLLOWEE + SPLIT + userId + SPLIT + entityType;
     }
 
 
