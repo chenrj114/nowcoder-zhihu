@@ -44,6 +44,21 @@ public class JedisAdapter {
         jedis.lpush(key, value);
     }
 
+    public List<String> lrange(String key, int start, int end) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.lrange(key, start, end);
+        } catch (Exception e) {
+            log.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
+    }
+
     public List<String> brpop(int timeout, String key) {
         Jedis jedis = jedisPool.getResource();
         return jedis.brpop(timeout, key);

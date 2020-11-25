@@ -17,6 +17,8 @@ public class RedisKeyUtil {
 
     private static final String BIZ_EVENT_QUEUE = "BIZ_EVENT_QUEUE";
 
+    private static final String BIZ_TIME_LINE = "TIMELINE";
+
     public static String getLikeKey(int entityType, int entityId) {
         return BIZ_LIKE + SPLIT + entityType + SPLIT + entityId;
     }
@@ -46,6 +48,10 @@ public class RedisKeyUtil {
 
     public static String getEventQueueKey() {
         return BIZ_EVENT_QUEUE;
+    }
+
+    public static String getTimeLineKey(int userId) {
+        return BIZ_TIME_LINE + SPLIT + userId;
     }
 
 }

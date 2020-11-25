@@ -8,9 +8,12 @@ import com.chenrj.zhihu.model.Feed;
 import com.chenrj.zhihu.model.Question;
 import com.chenrj.zhihu.model.User;
 import com.chenrj.zhihu.service.FeedService;
+import com.chenrj.zhihu.service.FollowServeice;
 import com.chenrj.zhihu.service.QuestionService;
 import com.chenrj.zhihu.service.UserService;
+import com.chenrj.zhihu.util.JedisAdapter;
 import com.chenrj.zhihu.util.JsonUtil;
+import com.chenrj.zhihu.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -31,6 +34,12 @@ public class FeedHandler implements EventHandler {
     @Autowired
     FeedService feedService;
 
+    @Autowired
+    FollowServeice followServeice;
+
+    @Autowired
+    JedisAdapter jedisAdapter;
+
     @Override
     public void doHandle(EventModel eventModel) {
         Feed feed = new Feed().setCreatedDate(new Date())
@@ -42,6 +51,15 @@ public class FeedHandler implements EventHandler {
             feedService.addFeed(feed);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        // 获取所有粉丝
+        List<Integer> followers = followServeice.getFollowers(EntityType.USER.getCode(), eventModel.getActionId(), Integer.MAX_VALUE);
+        // 将系统 添加进 粉丝
+        followers.add(0);
+        for (Integer follower : followers) {
+            String key = RedisKeyUtil.getTimeLineKey(eventModel.getActionId());
+            jedisAdapter.lpush(key, String.valueOf(feed.getId()));
         }
     }
 
